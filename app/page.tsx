@@ -17,29 +17,54 @@ export default function Home() {
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
 
   const navRef = useRef<HTMLDivElement>(null);
+  const activeCategoryRef = useRef(activeCategory);
+  const isManualScroll = useRef(false);
+
+  // Sync ref with state
+  useEffect(() => {
+    activeCategoryRef.current = activeCategory;
+  }, [activeCategory]);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50);
 
-      // Scroll Spy Logic
-      const sections = MENU_DATA.map((cat) => document.getElementById(cat.name));
-      const scrollPosition = window.scrollY + 200; // Offset for header + comfort zone
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollPosition) {
-          if (MENU_DATA[i].name !== activeCategory) {
-            setActiveCategory(MENU_DATA[i].name);
+          // Skip scroll spy if we're manually scrolling to a section
+          if (isManualScroll.current) {
+            ticking = false;
+            return;
           }
-          break;
-        }
+
+          const sections = MENU_DATA.map((cat) => document.getElementById(cat.name));
+          // Offset needs to account for the sticky header height (~120px) plus some breathing room
+          const scrollPosition = window.scrollY + 150; 
+
+          // Find the current active section
+          let newActiveCategory = MENU_DATA[0].name;
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const section = sections[i];
+            if (section && section.offsetTop <= scrollPosition) {
+              newActiveCategory = MENU_DATA[i].name;
+              break;
+            }
+          }
+
+          if (newActiveCategory !== activeCategoryRef.current) {
+            setActiveCategory(newActiveCategory);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeCategory]); // activeCategory dependency needed to avoid stale closure if not using functional update, but mainly for logic consistency
+  }, []);
 
   // Auto-scroll nav bar when active category changes
   useEffect(() => {
@@ -49,10 +74,15 @@ export default function Home() {
       ) as HTMLElement;
 
       if (activeBtn) {
-        activeBtn.scrollIntoView({
+        const container = navRef.current;
+        const scrollLeft =
+          activeBtn.offsetLeft -
+          container.clientWidth / 2 +
+          activeBtn.clientWidth / 2;
+
+        container.scrollTo({
+          left: scrollLeft,
           behavior: "smooth",
-          block: "nearest",
-          inline: "center",
         });
       }
     }
@@ -106,9 +136,16 @@ export default function Home() {
 
   const scrollToCategory = (categoryName: string) => {
     setActiveCategory(categoryName);
+    isManualScroll.current = true; // Disable spy temporarily
+    
+    // Re-enable spy after scrolling finishes (approximate duration)
+    setTimeout(() => {
+      isManualScroll.current = false;
+    }, 1000);
+
     const element = document.getElementById(categoryName);
     if (element) {
-      const offset = 120;
+      const offset = 100; // Adjusted for sticky header
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;

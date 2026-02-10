@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "DB Dai Ko Khaja Junction",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1625244724120-1fd1d34d00f6?q=80&w=1200&auto=format&fit=crop", 
+        url: "logo.jpeg", 
         width: 1200,
         height: 630,
         alt: "Authentic Nepalese Momo",
