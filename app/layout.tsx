@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DB Dai Ko Khaja Junction - Authentic Nepalese Taste",
     description: "Order delicious Momo, Sekuwa, and Newari Khaja Sets directly on WhatsApp!",
-    url: "https://db-dai-campsie.com", 
+    url: "https://db-dai-ko-khaja-junction.vercel.app/", 
     siteName: "DB Dai Ko Khaja Junction",
     images: [
       {
