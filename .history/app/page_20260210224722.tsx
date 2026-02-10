@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { MENU_DATA, MenuItem, MenuCategory } from "../data/menu";
 
 // Configuration
@@ -12,51 +12,17 @@ export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(MENU_DATA[0].name);
   const [scrolled, setScrolled] = useState(false);
-  const [customerName, setCustomerName] = useState("");
-  const [pickupTime, setPickupTime] = useState("");
+  const [customerName, setCustomerName] = useState('');
+  const [pickupTime, setPickupTime] = useState('');
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
-
-  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-
-      // Scroll Spy Logic
-      const sections = MENU_DATA.map((cat) => document.getElementById(cat.name));
-      const scrollPosition = window.scrollY + 200; // Offset for header + comfort zone
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollPosition) {
-          if (MENU_DATA[i].name !== activeCategory) {
-            setActiveCategory(MENU_DATA[i].name);
-          }
-          break;
-        }
-      }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeCategory]); // activeCategory dependency needed to avoid stale closure if not using functional update, but mainly for logic consistency
-
-  // Auto-scroll nav bar when active category changes
-  useEffect(() => {
-    if (navRef.current) {
-      const activeBtn = Array.from(navRef.current.children).find(
-        (child) => child.textContent === activeCategory
-      ) as HTMLElement;
-
-      if (activeBtn) {
-        activeBtn.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
-      }
-    }
-  }, [activeCategory]);
+  }, []);
 
   const addToCart = (item: MenuItem) => {
     setCart((prev) => {
@@ -133,7 +99,7 @@ export default function Home() {
             <div
               className={`shrink-0 overflow-hidden rounded-full border-2 transition-all duration-300 ${
                 scrolled
-                  ? "w-9 h-9 sm:w-10 sm:h-10 border-brand-600/30"
+                  ? "w-9 h-9 sm:w-10 sm:h-10 border-red-600/30"
                   : "w-10 h-10 sm:w-12 sm:h-12 border-white/40"
               } shadow-md`}
             >
@@ -152,7 +118,7 @@ export default function Home() {
                 }`}
               >
                 DB Dai Ko{" "}
-                <span className={scrolled ? "text-brand-600" : "text-brand-400"}>
+                <span className={scrolled ? "text-red-600" : "text-orange-400"}>
                   Khaja Junction
                 </span>
               </p>
@@ -190,7 +156,7 @@ export default function Home() {
               />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-brand-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-pulse-badge ring-2 ring-white">
+              <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center animate-pulse-badge ring-2 ring-white">
                 {totalItems}
               </span>
             )}
@@ -200,7 +166,7 @@ export default function Home() {
 
       {/* ─── HERO ─── */}
       <section className="relative flex items-center justify-center overflow-hidden bg-stone-900 h-[70svh] min-h-[420px] sm:h-[65svh] sm:min-h-[480px] md:h-[550px] lg:h-[600px]">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-950 via-brand-900 to-stone-900 opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-900 via-red-800 to-orange-900 opacity-90" />
         <div className="absolute inset-0 bg-[url('/bg-hero.png')] bg-cover bg-center mix-blend-overlay opacity-50" />
         {/* Decorative overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -215,7 +181,7 @@ export default function Home() {
             />
           </div>
 
-          <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 text-brand-100 border border-brand-200/20 text-[11px] sm:text-xs font-bold tracking-widest mb-4 uppercase backdrop-blur-md">
+          <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 text-orange-200 border border-orange-400/30 text-[11px] sm:text-xs font-bold tracking-widest mb-4 uppercase backdrop-blur-md">
             Authentic Nepalese Street Food
           </span>
 
@@ -223,7 +189,7 @@ export default function Home() {
             Taste of Nepal
             <br />
             in{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-200">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
               Campsie
             </span>
           </h1>
@@ -235,7 +201,7 @@ export default function Home() {
 
           <button
             onClick={() => scrollToCategory("Momo Mania 🥟")}
-            className="touch-target bg-brand-600 hover:bg-brand-700 text-white px-8 sm:px-10 py-3 sm:py-3.5 rounded-full font-bold text-base sm:text-lg shadow-xl shadow-brand-900/40 transition-all duration-200 active:scale-95 hover:-translate-y-0.5"
+            className="touch-target bg-red-600 hover:bg-red-700 text-white px-8 sm:px-10 py-3 sm:py-3.5 rounded-full font-bold text-base sm:text-lg shadow-xl shadow-red-900/40 transition-all duration-200 active:scale-95 hover:-translate-y-0.5"
           >
             View Menu & Order
           </button>
@@ -245,18 +211,15 @@ export default function Home() {
       {/* ─── CATEGORY NAV (Sticky) ─── */}
       <nav className="sticky top-[52px] sm:top-[56px] md:top-[60px] z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-sm">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div 
-            ref={navRef}
-            className="flex items-center gap-1 sm:gap-2 py-2 overflow-x-auto no-scrollbar"
-          >
+          <div className="flex items-center gap-1 sm:gap-2 py-2 overflow-x-auto no-scrollbar">
             {MENU_DATA.map((cat) => (
               <button
                 key={cat.name}
                 onClick={() => scrollToCategory(cat.name)}
-                className={`touch-target shrink-0 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 border ${
+                className={`touch-target shrink-0 px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
                   activeCategory === cat.name
-                    ? "bg-brand-600 text-white border-brand-600 shadow-lg shadow-brand-600/30 scale-105"
-                    : "bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                    ? "bg-red-600 text-white shadow-md shadow-red-600/25"
+                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 active:bg-stone-200"
                 }`}
               >
                 {cat.name}
@@ -294,40 +257,25 @@ export default function Home() {
                 return (
                   <div
                     key={item.id}
-                    className={`group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 border ${
+                    className={`group relative bg-white rounded-2xl sm:rounded-xl p-4 sm:p-5 transition-all duration-200 border ${
                       quantityInCart > 0
-                        ? "border-brand-200 shadow-xl shadow-brand-900/10 ring-1 ring-brand-100 transform -translate-y-1"
-                        : "border-stone-100 shadow-sm hover:shadow-xl hover:border-stone-200 hover:-translate-y-1"
+                        ? "border-red-200 shadow-md shadow-red-600/5 ring-1 ring-red-100"
+                        : "border-stone-100 shadow-sm hover:shadow-md hover:border-stone-200"
                     }`}
                   >
-                    {/* Image Area */}
-                    <div className="relative h-48 sm:h-52 overflow-hidden bg-stone-100">
-                      {item.image && (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          loading="lazy"
-                        />
-                      )}
-                      
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+                    {/* Popular Badge */}
+                    {item.popular && (
+                      <div className="absolute -top-2.5 right-4 sm:right-3">
+                        <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-md">
+                          Popular
+                        </span>
+                      </div>
+                    )}
 
-                      {/* Popular Badge */}
-                      {item.popular && (
-                        <div className="absolute top-3 right-3">
-                          <span className="bg-gradient-to-r from-brand-500 to-brand-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg backdrop-blur-md border border-white/20">
-                            Popular
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col p-4 sm:p-5">
+                    <div className="flex flex-col h-full">
                       {/* Name + Description */}
-                      <div className="mb-4">
-                        <h4 className="font-heading font-black text-lg text-stone-900 group-hover:text-brand-700 transition-colors leading-tight mb-2">
+                      <div className="flex-1 mb-3">
+                        <h4 className="font-heading font-bold text-base sm:text-[15px] text-stone-900 group-hover:text-red-700 transition-colors leading-snug mb-1.5">
                           {item.name}
                         </h4>
                         <p className="text-[13px] sm:text-sm text-stone-400 leading-relaxed line-clamp-2">
@@ -345,7 +293,7 @@ export default function Home() {
                           <div className="flex items-center bg-stone-100 rounded-xl overflow-hidden shadow-inner">
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="touch-target w-10 h-10 flex items-center justify-center text-brand-600 font-bold text-lg hover:bg-white active:bg-brand-50 transition-colors"
+                              className="touch-target w-10 h-10 flex items-center justify-center text-red-600 font-bold text-lg hover:bg-white active:bg-red-50 transition-colors"
                             >
                               −
                             </button>
@@ -354,7 +302,7 @@ export default function Home() {
                             </span>
                             <button
                               onClick={() => addToCart(item)}
-                              className="touch-target w-10 h-10 flex items-center justify-center bg-brand-600 text-white font-bold text-lg hover:bg-brand-700 active:bg-brand-800 transition-colors"
+                              className="touch-target w-10 h-10 flex items-center justify-center bg-red-600 text-white font-bold text-lg hover:bg-red-700 active:bg-red-800 transition-colors"
                             >
                               +
                             </button>
@@ -362,7 +310,7 @@ export default function Home() {
                         ) : (
                           <button
                             onClick={() => addToCart(item)}
-                            className="touch-target bg-stone-100 text-stone-800 hover:bg-brand-600 hover:text-white active:bg-brand-700 px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-sm active:scale-95 hover:shadow-brand-600/20 hover:shadow-lg"
+                            className="touch-target bg-stone-100 text-stone-800 hover:bg-red-600 hover:text-white active:bg-red-700 px-5 sm:px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 shadow-sm active:scale-95"
                           >
                             Add
                           </button>
@@ -403,7 +351,7 @@ export default function Home() {
               <div className="flex gap-3">
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/8 flex items-center justify-center hover:bg-red-600 transition-colors"
                   aria-label="Facebook"
                 >
                   <svg
@@ -416,7 +364,7 @@ export default function Home() {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 rounded-full bg-white/8 flex items-center justify-center hover:bg-brand-600 transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/8 flex items-center justify-center hover:bg-red-600 transition-colors"
                   aria-label="Instagram"
                 >
                   <svg
@@ -436,7 +384,7 @@ export default function Home() {
                 Contact
               </h5>
               <div className="flex items-start gap-3 text-stone-400">
-                <span className="text-brand-500 mt-0.5 shrink-0">📍</span>
+                <span className="text-red-500 mt-0.5 shrink-0">📍</span>
                 <a
                   href={LOCATION_URL}
                   target="_blank"
@@ -449,7 +397,7 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex items-center gap-3 text-stone-400">
-                <span className="text-brand-500 shrink-0">📞</span>
+                <span className="text-red-500 shrink-0">📞</span>
                 <a
                   href={`tel:+${WA_NUMBER}`}
                   className="hover:text-white transition-colors"
@@ -458,7 +406,7 @@ export default function Home() {
                 </a>
               </div>
               <div className="flex items-center gap-3 text-stone-400">
-                <span className="text-brand-500 shrink-0">📧</span>
+                <span className="text-red-500 shrink-0">📧</span>
                 <a
                   href="mailto:dbdaikokhajajunction7@gmail.com"
                   className="hover:text-white transition-colors break-all"
@@ -474,7 +422,7 @@ export default function Home() {
                 Opening Hours
               </h5>
               <div className="flex items-start gap-3 text-stone-400">
-                <span className="text-brand-500 mt-0.5 shrink-0">🕒</span>
+                <span className="text-red-500 mt-0.5 shrink-0">🕒</span>
                 <div>
                   <p className="text-white font-medium">Open Daily</p>
                   <p className="text-stone-500 mt-0.5">3:00 PM — 11:00 PM</p>
@@ -510,7 +458,7 @@ export default function Home() {
         <div className="fixed bottom-4 sm:bottom-6 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-40 sm:w-full sm:max-w-md safe-bottom">
           <button
             onClick={() => setIsCartOpen(true)}
-            className="w-full bg-brand-600 text-white px-4 py-3.5 sm:py-4 rounded-2xl shadow-2xl shadow-brand-900/40 flex justify-between items-center font-bold text-base sm:text-lg hover:bg-brand-700 transition-all active:scale-[0.98] animate-bounce-subtle ring-1 ring-white/20"
+            className="w-full bg-red-600 text-white px-4 py-3.5 sm:py-4 rounded-2xl shadow-2xl shadow-red-900/30 flex justify-between items-center font-bold text-base sm:text-lg hover:bg-red-700 transition-all active:scale-[0.98] animate-bounce-subtle"
           >
             <div className="flex items-center gap-3">
               <div className="bg-white/20 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm backdrop-blur-sm font-bold">
@@ -556,7 +504,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="touch-target w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-brand-100 hover:text-brand-600 transition-colors text-sm"
+                className="touch-target w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-red-100 hover:text-red-600 transition-colors text-sm"
               >
                 ✕
               </button>
@@ -570,7 +518,7 @@ export default function Home() {
                   <p className="font-medium text-sm">Your cart is empty</p>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="mt-3 text-brand-600 font-bold text-sm hover:underline"
+                    className="mt-3 text-red-600 font-bold text-sm hover:underline"
                   >
                     Start Ordering
                   </button>
@@ -604,7 +552,7 @@ export default function Home() {
                       </span>
                       <button
                         onClick={() => addToCart(item)}
-                        className="w-9 h-9 flex items-center justify-center text-brand-600 hover:bg-white active:bg-brand-50 font-bold transition-colors"
+                        className="w-9 h-9 flex items-center justify-center text-red-600 hover:bg-white active:bg-red-50 font-bold transition-colors"
                       >
                         +
                       </button>
@@ -651,19 +599,8 @@ export default function Home() {
                       onClick={() => setShowCheckoutForm(false)}
                       className="flex items-center gap-1.5 text-sm text-stone-500 hover:text-stone-800 font-medium mb-4 transition-colors"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 19l-7-7 7-7"
-                        />
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                       </svg>
                       Back to cart
                     </button>
@@ -678,11 +615,8 @@ export default function Home() {
                     {/* Customer Details Form */}
                     <div className="space-y-3 mb-5">
                       <div>
-                        <label
-                          htmlFor="customerName"
-                          className="block text-xs font-semibold text-stone-600 mb-1.5"
-                        >
-                          Your Name <span className="text-brand-500">*</span>
+                        <label htmlFor="customerName" className="block text-xs font-semibold text-stone-600 mb-1.5">
+                          Your Name <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="customerName"
@@ -690,15 +624,12 @@ export default function Home() {
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
                           placeholder="e.g. Ram Bahadur"
-                          className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900 text-sm placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900 text-sm placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 transition-all"
                         />
                       </div>
                       <div>
-                        <label
-                          htmlFor="pickupTime"
-                          className="block text-xs font-semibold text-stone-600 mb-1.5"
-                        >
-                          Pickup Time <span className="text-brand-500">*</span>
+                        <label htmlFor="pickupTime" className="block text-xs font-semibold text-stone-600 mb-1.5">
+                          Pickup Time <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="pickupTime"
@@ -706,7 +637,7 @@ export default function Home() {
                           value={pickupTime}
                           onChange={(e) => setPickupTime(e.target.value)}
                           placeholder="e.g. 6:30 PM today"
-                          className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900 text-sm placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900 text-sm placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 transition-all"
                         />
                       </div>
                     </div>
@@ -716,8 +647,8 @@ export default function Home() {
                       disabled={!customerName.trim() || !pickupTime.trim()}
                       className={`touch-target w-full py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all flex items-center justify-center gap-2.5 active:scale-[0.98] ${
                         customerName.trim() && pickupTime.trim()
-                          ? "bg-green-600 hover:bg-green-700 active:bg-green-800 text-white"
-                          : "bg-stone-200 text-stone-400 cursor-not-allowed shadow-none"
+                          ? 'bg-green-600 hover:bg-green-700 active:bg-green-800 text-white'
+                          : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
                       }`}
                     >
                       <svg
